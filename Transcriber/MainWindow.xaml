@@ -1,0 +1,40 @@
+<Window x:Class="Transcriber.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Quillvora · Live transcription" Width="1440" Height="920" MinWidth="1080" MinHeight="720" Closing="Window_Closing">
+ <DockPanel Background="#F1F5F7">
+  <Menu DockPanel.Dock="Top" Background="White" Padding="10,5">
+   <MenuItem Header="_File"><MenuItem Header="New session" Click="NewSession_Click"/><MenuItem Header="Open session…" Click="OpenSession_Click"/><MenuItem Header="Save session…" Click="SaveSession_Click"/><Separator/><MenuItem Header="Save all transcript so far…" Click="SaveAll_Click"/><MenuItem Header="Save selected transcript…" Click="SaveSelection_Click"/></MenuItem>
+   <MenuItem Header="_Summaries"><MenuItem Header="Generate prose summary" Click="Prose_Click"/><MenuItem Header="Generate PowerPoint outline" Click="Slides_Click"/><Separator/><MenuItem Header="Export selected summaries as PowerPoint…" Click="ExportSelected_Click"/><MenuItem Header="Export all summaries as one PowerPoint…" Click="ExportAll_Click"/><MenuItem Header="Save displayed summary text…" Click="SaveSummary_Click"/></MenuItem>
+   <MenuItem Header="_Settings" Click="Settings_Click"/>
+   <MenuItem Header="_Help" Click="Help_Click"/>
+  </Menu>
+  <Border DockPanel.Dock="Top" Background="#173447" Padding="24,17">
+   <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+    <StackPanel><TextBlock Text="Quillvora" Foreground="White" FontSize="26" FontWeight="SemiBold"/><TextBlock Text="CAPTURE  /  TRANSCRIBE  /  MAKE SENSE OF IT" Foreground="#A9C8D7" Margin="1,5,0,0" FontSize="11"/></StackPanel>
+    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center"><TextBlock x:Name="ClockText" Text="00:00:00" Foreground="White" FontFamily="Consolas" FontSize="23" VerticalAlignment="Center" Margin="0,0,22,0"/><Button x:Name="StartButton" Content="●  Start capture" Click="Start_Click" Background="#47D9B3"/><Button x:Name="StopButton" Content="■  Stop &amp; finish" Click="Stop_Click" IsEnabled="False"/></StackPanel>
+   </Grid>
+  </Border>
+  <StatusBar DockPanel.Dock="Bottom" Padding="14,7" Background="#E6EEF2"><StatusBarItem><TextBlock x:Name="StatusText" Text="Ready · Select your audio sources to begin" TextTrimming="CharacterEllipsis" MaxWidth="950"/></StatusBarItem><Separator/><StatusBarItem><TextBlock x:Name="QueueText"/></StatusBarItem></StatusBar>
+  <Grid Margin="16"><Grid.ColumnDefinitions><ColumnDefinition Width="275"/><ColumnDefinition Width="12"/><ColumnDefinition Width="*"/><ColumnDefinition Width="12"/><ColumnDefinition Width="0.9*"/></Grid.ColumnDefinitions>
+   <Border Style="{StaticResource Card}"><DockPanel>
+    <StackPanel DockPanel.Dock="Top"><TextBlock Text="Audio sources" FontSize="19" FontWeight="SemiBold"/><TextBlock Text="Choose one, several, or all." Foreground="#69818E" Margin="0,5,0,14"/><WrapPanel><Button x:Name="RefreshButton" Content="Refresh" Click="Refresh_Click"/><Button x:Name="AllSourcesButton" Content="Select all" Click="AllSources_Click" Padding="9,8"/></WrapPanel><TextBlock Text="PC playback · Mic / line in · NDI" FontSize="11" Foreground="#69818E" Margin="0,12,0,12"/></StackPanel>
+    <StackPanel DockPanel.Dock="Bottom" Margin="0,14,0,0"><TextBlock Text="SPEECH &amp; AI" FontWeight="SemiBold" FontSize="11" Foreground="#69818E"/><TextBlock x:Name="ConfigText" TextWrapping="Wrap" Margin="0,8,0,10"/><Button Content="Configure models &amp; API keys" Click="Settings_Click" Margin="0"/><TextBlock Text="Speech recognition runs on this PC. Summaries use your chosen AI provider." TextWrapping="Wrap" Foreground="#69818E" FontSize="11" Margin="0,12,0,0"/></StackPanel>
+    <ListBox x:Name="SourcesList" BorderThickness="0" HorizontalContentAlignment="Stretch" ScrollViewer.HorizontalScrollBarVisibility="Disabled"><ListBox.ItemTemplate><DataTemplate><StackPanel Margin="0,7,0,10"><CheckBox IsChecked="{Binding Selected, Mode=TwoWay}"><StackPanel Width="182"><TextBlock Text="{Binding Name}" TextWrapping="Wrap"/><TextBlock Text="{Binding Kind}" Foreground="#69818E" FontSize="11" Margin="0,4,0,6"/></StackPanel></CheckBox><ProgressBar Value="{Binding Level}" Maximum="100" Height="4" Margin="19,2,0,0" Foreground="#20B691"/></StackPanel></DataTemplate></ListBox.ItemTemplate></ListBox>
+   </DockPanel></Border>
+   <Border Grid.Column="2" Style="{StaticResource Card}"><DockPanel>
+    <StackPanel DockPanel.Dock="Top"><TextBlock Text="Live transcript" FontSize="19" FontWeight="SemiBold"/><TextBlock Text="Timestamped lines from every selected source" Foreground="#69818E" Margin="0,5,0,13"/><WrapPanel Margin="0,0,0,12"><Button Content="Save all so far" Click="SaveAll_Click"/><Button Content="Save selection" Click="SaveSelection_Click"/><CheckBox x:Name="AutoScroll" Content="Follow live" IsChecked="True" Margin="5,0"/></WrapPanel></StackPanel>
+    <TextBlock DockPanel.Dock="Bottom" x:Name="TranscriptInfo" Text="0 lines · Select text to save or summarize a block" Foreground="#69818E" FontSize="11" Margin="0,10,0,0" TextWrapping="Wrap"/>
+    <TextBox x:Name="TranscriptBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" VerticalContentAlignment="Top" FontSize="14" BorderThickness="0" Padding="0,6" SelectionChanged="TranscriptSelection_Changed"/>
+   </DockPanel></Border>
+   <Border Grid.Column="4" Style="{StaticResource Card}"><DockPanel>
+    <StackPanel DockPanel.Dock="Top"><TextBlock Text="AI workspace" FontSize="19" FontWeight="SemiBold"/><TextBlock Text="Turn a moment or a whole session into a summary" Foreground="#69818E" TextWrapping="Wrap" Margin="0,5,0,13"/>
+     <ComboBox x:Name="ScopeBox" SelectedIndex="0" Margin="0,0,0,9"><ComboBoxItem Content="All transcript so far"/><ComboBoxItem Content="Selected transcript text"/><ComboBoxItem Content="Last 10 minutes"/></ComboBox>
+     <TextBox x:Name="PromptBox" Text="Summarize the key ideas and decisions." AcceptsReturn="True" TextWrapping="Wrap" Height="74" VerticalContentAlignment="Top" VerticalScrollBarVisibility="Auto"/>
+     <TextBlock Text="Try: “Summarize last 10 minutes” or “Summarize the section talking about budget”." TextWrapping="Wrap" Foreground="#69818E" FontSize="11" Margin="0,6,0,10"/>
+     <WrapPanel Margin="0,0,0,10"><Button x:Name="ProseButton" Content="Prose" Click="Prose_Click" Background="#147D92" Foreground="White"/><Button x:Name="SlidesButton" Content="Slide outline" Click="Slides_Click"/><Button x:Name="CancelAiButton" Content="Cancel" Click="CancelAi_Click" IsEnabled="False"/></WrapPanel>
+     <TextBlock x:Name="AiStatus" Text="No summary generated yet" Foreground="#147D92" TextWrapping="Wrap" Margin="0,0,0,8"/>
+    </StackPanel>
+    <StackPanel DockPanel.Dock="Bottom" Margin="0,12,0,0"><TextBlock Text="SUMMARY BLOCKS · Ctrl-click to select several" FontSize="10" FontWeight="SemiBold" Foreground="#69818E" Margin="0,0,0,7"/><ListBox x:Name="SummariesList" Height="100" SelectionMode="Extended" DisplayMemberPath="Title" SelectionChanged="Summary_Changed"/><WrapPanel Margin="0,10,0,0"><Button Content="Export selected PPTX" Click="ExportSelected_Click" Padding="9,8"/><Button Content="Export all" Click="ExportAll_Click" Padding="9,8"/></WrapPanel></StackPanel>
+    <TextBox x:Name="SummaryBox" IsReadOnly="True" AcceptsReturn="True" TextWrapping="Wrap" VerticalScrollBarVisibility="Auto" VerticalContentAlignment="Top" Background="#F7FAFB" BorderThickness="0" FontSize="14"/>
+   </DockPanel></Border>
+  </Grid>
+ </DockPanel>
+</Window>
