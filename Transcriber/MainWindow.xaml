@@ -1,4 +1,4 @@
-<Window x:Class="Transcriber.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Quillvora · Live transcription" Width="1440" Height="920" MinWidth="1080" MinHeight="720" Closing="Window_Closing">
+<Window x:Class="Transcriber.MainWindow" xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="Quillvora · Live transcription" Icon="Assets/Quillvora.ico" Width="1440" Height="920" MinWidth="1080" MinHeight="720" Closing="Window_Closing">
  <DockPanel Background="#F1F5F7">
   <Menu DockPanel.Dock="Top" Background="White" Padding="10,5">
    <MenuItem Header="_File"><MenuItem Header="New session" Click="NewSession_Click"/><MenuItem Header="Open session…" Click="OpenSession_Click"/><MenuItem Header="Save session…" Click="SaveSession_Click"/><Separator/><MenuItem Header="Save all transcript so far…" Click="SaveAll_Click"/><MenuItem Header="Save selected transcript…" Click="SaveSelection_Click"/></MenuItem>

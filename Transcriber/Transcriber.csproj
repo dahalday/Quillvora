@@ -5,6 +5,7 @@
     <RootNamespace>Transcriber</RootNamespace>
     <Product>Quillvora</Product>
     <Title>Quillvora</Title>
+    <ApplicationIcon>Assets\Quillvora.ico</ApplicationIcon>
     <TargetFramework>net8.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Nullable>enable</Nullable>
@@ -14,6 +15,7 @@
     <Version>0.1.0</Version>
   </PropertyGroup>
   <ItemGroup>
+    <Resource Include="Assets\Quillvora.ico" />
     <PackageReference Include="NAudio" Version="2.2.1" />
     <PackageReference Include="Whisper.net" Version="1.9.1" />
     <PackageReference Include="Whisper.net.Runtime" Version="1.9.1" />

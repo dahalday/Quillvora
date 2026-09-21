@@ -8,13 +8,14 @@ Workspace: `F:\GPT programs\Transcriber`
 
 Quillvora is a native Windows desktop application for capturing audio from independently selected Windows playback devices, recording devices, and NDI sources. Whisper runs locally to produce timestamped, source-labelled transcripts. Users can generate prose summaries or slide outlines through a configured AI provider, save sessions, and export combined PowerPoint presentations.
 
-The portable Windows x64 build is at `dist\Quillvora\Quillvora.exe`. It has been rebuilt with the window-closing fix described below. The project-root `Quillvora.lnk` shortcut has a custom microphone icon and targets this executable. `Start Quillvora.cmd` is an alternative launcher.
+The portable Windows x64 build is at `dist\Quillvora\Quillvora.exe`. It has been rebuilt with the window-closing fix and embedded microphone icon described below. The project-root `Quillvora.lnk` shortcut uses the executable's embedded icon and targets this portable executable. `Start Quillvora.cmd` is an alternative launcher. The installed copy at `C:\Program Files\Quillvora\Quillvora.exe` was also updated on 20 September 2026; see section 11.
 
 ## 2. Project map
 
 | File or folder | Responsibility |
 | --- | --- |
 | `Transcriber/MainWindow.xaml` | Main WPF layout and event wiring |
+| `Transcriber/Assets/Quillvora.ico` | Multi-resolution microphone icon embedded in the executable and WPF resources |
 | `Transcriber/MainWindow.xaml.cs` | Capture controls, session clock, summaries, exports, recovery, closing |
 | `Transcriber/AudioCapture.cs` | Windows endpoint enumeration, WASAPI capture, downmixing, buffering, resampling |
 | `Transcriber/NdiCapture.cs` | NDI native interop, discovery, audio reception |
@@ -27,7 +28,7 @@ The portable Windows x64 build is at `dist\Quillvora\Quillvora.exe`. It has been
 | `Transcriber/App.xaml` and `App.xaml.cs` | Shared styles, application startup, unhandled UI exception display |
 | `Transcriber.Tests/Program.cs` | Console test harness and optional hardware/render checks |
 | `build.ps1` | Self-contained publish, bundled model and licence copying |
-| `create-shortcut.ps1` | Generates a multi-resolution ICO and project-root Windows shortcut |
+| `create-shortcut.ps1` | Creates a project-root Windows shortcut using the embedded executable icon |
 | `verify-slides.ps1` | Optional PowerPoint COM rendering of the sample deck |
 | `models/` | Source speech model files |
 | `dist/Quillvora/` | Portable application and its runtime dependencies |
@@ -81,7 +82,7 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\create-shortcut.ps1
 
 The process-scoped execution-policy argument allows these scripts to run without changing the machine's persistent PowerShell policy. Close Quillvora before publishing if its files are locked.
 
-`build.ps1` publishes a self-contained `win-x64` application, copies `models/ggml-tiny.bin` if present, and includes the README and third-party notices. It does not download a missing speech model or recreate the shortcut. Run `create-shortcut.ps1` after a clean publish or after moving the project; the generated shortcut stores absolute paths. Its icon is `dist/Quillvora/Quillvora.ico`.
+`build.ps1` publishes a self-contained `win-x64` application, copies `models/ggml-tiny.bin` if present, and includes the README and third-party notices. It does not download a missing speech model or recreate the shortcut. Run `create-shortcut.ps1` after a clean publish or after moving the project; the generated shortcut stores absolute paths. Its icon comes from the executable. The source icon is `Transcriber/Assets/Quillvora.ico`, embedded as both the application icon and a WPF resource for the title bar.
 
 Distribute the entire `dist/Quillvora` folder, not the executable alone. The build script includes the user manual, technical handoff, and validation record in the portable folder. No installer or code signing is configured.
 
@@ -106,8 +107,11 @@ The bundled model is multilingual Tiny in GGML format. NDI is loaded dynamically
 | Release build after shutdown fix | Passed; zero warnings and zero errors |
 | Existing core harness after shutdown fix | All 29 checks passed |
 | Portable publish after shutdown fix | Completed successfully |
-| Shortcut | Target and working directory inspected; generated ICO loaded successfully |
-| Real Whisper speech, endpoint discovery, synthetic NDI, offscreen WPF layout | Reported passed in the earlier `VALIDATION.md`; not rerun for the shutdown fix |
+| Latest portable publish after icon change | Passed; NU1900 warning because NuGet vulnerability metadata was unavailable |
+| Latest harness with `--render` after icon change | All 29 core checks plus WPF offscreen rendering passed (30 total) |
+| Shortcut and executable icon | Shortcut regenerated using the executable icon; Windows extracted a 32×32 icon from the published executable |
+| Installed copy | Updated EXE, DLL, PDB, and handoff; SHA-256 hashes matched the portable build |
+| Real Whisper speech, endpoint discovery, synthetic NDI | Reported passed in the earlier `VALIDATION.md`; not rerun for the shutdown or icon changes |
 | Live cloud authentication/billing and local LLM generation | Not verified against real configured providers |
 | Close while idle, recording, draining, or generating AI | Manual acceptance remains outstanding |
 
@@ -149,3 +153,15 @@ For the next maintainer, prioritize the shutdown acceptance checks above, a live
 - [Project overview](README.md)
 - [Historical verification](VALIDATION.md)
 - [Third-party components](THIRD_PARTY.md)
+
+## 10. Embedded application icon
+
+The existing microphone icon is now embedded in the executable and displayed beside the main window title. The shortcut script uses the executable icon, so it no longer generates a separate ICO. Portable publish succeeded; all 29 core checks plus the WPF offscreen render passed (30 total). Windows successfully extracted the published executable icon. NuGet vulnerability metadata was unavailable during verification (NU1900 warning); compilation and tests succeeded.
+
+`Transcriber.csproj` sets `ApplicationIcon` to `Assets\Quillvora.ico` and includes that file as a WPF `Resource`. `MainWindow.xaml` sets `Icon="Assets/Quillvora.ico"` for the title bar beside “Quillvora · Live transcription”. The source asset is included in the project rather than generated during publishing. The title-bar appearance has not been manually inspected in a visible running window; the WPF construction/render check passed.
+
+## 11. Installed copy update
+
+On 20 September 2026, compared all portable-build files against `C:\Program Files\Quillvora`. Only `Quillvora.exe`, `Quillvora.dll`, `Quillvora.pdb`, and `HANDOFF.md` differed. Copied those four files with elevated write access and verified each destination against its source using SHA-256. No Quillvora process was running at the time of the check. The installed application was not launched during verification.
+
+The project-root shortcut still targets the workspace portable build. To run the installed copy, use `C:\Program Files\Quillvora\Quillvora.exe`. Future publishes update only `dist/Quillvora`; copying a new build into Program Files is a separate step requiring write permission. Close the installed app before replacing its files. Existing ZIP archives in `dist/` were not rebuilt for the icon change; use the updated folder for the current build or recreate an archive before distribution.
