@@ -6,6 +6,8 @@ Workspace: `F:\GPT programs\Transcriber`
 
 ## 1. Purpose and current state
 
+GitHub distribution: the runnable Windows package is `Quillvora-0.1.0-win-x64.zip` under Releases. The repository intentionally excludes `dist/`, so GitHub's source ZIP contains no executable. README and user manual now explain the distinction. Refresh the release ZIP from the current portable folder when shipping updates; include the entire folder and bundled model. The 30 core/render checks passed again during release preparation; NU1900 indicated unavailable vulnerability metadata.
+
 Quillvora is a native Windows desktop application for capturing audio from independently selected Windows playback devices, recording devices, and NDI sources. Whisper runs locally to produce timestamped, source-labelled transcripts. Users can generate prose summaries or slide outlines through a configured AI provider, save sessions, and export combined PowerPoint presentations.
 
 The portable Windows x64 build is at `dist\Quillvora\Quillvora.exe`. It has been rebuilt with the window-closing fix and embedded microphone icon described below. The project-root `Quillvora.lnk` shortcut uses the executable's embedded icon and targets this portable executable. `Start Quillvora.cmd` is an alternative launcher. The installed copy at `C:\Program Files\Quillvora\Quillvora.exe` was also updated on 20 September 2026; see section 11.

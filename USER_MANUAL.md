@@ -10,6 +10,8 @@ Speech recognition runs locally. Summaries use the selected cloud provider or lo
 
 ## 2. Start the application
 
+For a GitHub download, get **Quillvora-0.1.0-win-x64.zip** from [Releases](https://github.com/dahalday/Quillvora/releases/latest), extract the entire ZIP, then open **Quillvora/Quillvora.exe**. GitHub's **Code → Download ZIP** and **Source code** archives contain only the development files and cannot be launched directly.
+
 In `F:\GPT programs\Transcriber`, double-click **Quillvora**, the shortcut with the microphone icon. You can also use **Start Quillvora.cmd** or open `dist\Quillvora\Quillvora.exe` directly.
 
 Keep the whole `dist\Quillvora` folder together. The application needs the libraries and model files beside the executable. This portable build includes .NET; Python is not required. The documented prerequisites are Windows x64, Microsoft Visual C++ 2022 x64 runtime, and an AVX-capable CPU. NDI use additionally requires a separately installed x64 NDI Runtime.

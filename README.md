@@ -1,12 +1,18 @@
 # Quillvora for Windows
 
-Formerly SourceScribe. Existing settings and recovery continue to use `%LOCALAPPDATA%\SourceScribe` for compatibility. Launch using `Quillvora.lnk` or `Start Quillvora.cmd`. See [User manual](USER_MANUAL.md) and [Technical handoff](HANDOFF.md).
+Formerly SourceScribe. Existing settings and recovery continue to use `%LOCALAPPDATA%\SourceScribe` for compatibility. See [User manual](USER_MANUAL.md) and [Technical handoff](HANDOFF.md).
 
 A native Windows desktop transcription app with independently selectable PC playback, microphone/line-in and NDI audio, local speech recognition, and an AI summary workspace.
 
-## Run
+## Download and run on Windows
 
-Open **dist/Quillvora/Quillvora.exe**. Keep the entire folder together; it includes the runtime libraries and a multilingual Tiny Whisper model. The portable build includes .NET, so no Python or .NET installation is needed.
+1. [Download Quillvora for Windows x64](https://github.com/dahalday/Quillvora/releases/latest/download/Quillvora-0.1.0-win-x64.zip), or open [Releases](https://github.com/dahalday/Quillvora/releases/latest) and choose **Quillvora-0.1.0-win-x64.zip** under **Assets**.
+2. Right-click the downloaded ZIP and choose **Extract All**.
+3. Open the extracted **Quillvora** folder and double-click **Quillvora.exe**.
+
+Keep the entire extracted folder together; it includes the runtime libraries and a multilingual Tiny Whisper model. The portable build includes .NET, so no Python or .NET installation is needed.
+
+**GitHub's Code → Download ZIP and the release's Source code archives contain source code only.** They do not include the EXE, runtime libraries, or speech model. Download the Windows ZIP linked above to run the app. Developers building this repository can launch `dist/Quillvora/Quillvora.exe` after running `build.ps1`.
 
 Requirements: Windows x64 (Windows 11 recommended), Microsoft Visual C++ 2022 x64 runtime, and an AVX-capable CPU for the bundled Whisper runtime. NDI capture additionally requires the separately installed x64 NDI Runtime. This computer already has NDI 6 Runtime installed. The app does not redistribute NDI.
 
